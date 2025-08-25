@@ -1,10 +1,8 @@
-import { useMemo } from "react";
 import {
   createFileRoute,
   useNavigate,
   useSearch,
 } from "@tanstack/react-router";
-import type { Product } from "../products";
 import { useQuery } from "@tanstack/react-query";
 import { CustomPagination } from "@/components/custom-pagination";
 import { fetchBrands } from "@/services/brands";
@@ -24,18 +22,13 @@ function RouteComponent() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["products", "brand"],
-    queryFn: async () => fetchBrands("brand"),
+    queryFn: fetchBrands,
   });
 
-  const brands = useMemo<string[]>(() => {
-    return [
-      ...new Set(data?.map((item: Product) => item.brand).filter(Boolean)),
-    ] as string[];
-  }, [data]);
+  const totalPages = Math.ceil((data?.length || 0) / perPage);
 
-  const totalPages = Math.ceil((brands.length || 0) / perPage);
-
-  const paginatedProducts = brands.slice((page - 1) * perPage, page * perPage);
+  const paginatedProducts =
+    data?.slice((page - 1) * perPage, page * perPage) || [];
 
   if (isLoading) return <p className="text-gray-500">Loading...</p>;
   if (error) return <p className="text-red-500">Error: {error.message}</p>;
@@ -50,7 +43,7 @@ function RouteComponent() {
         {paginatedProducts.map((item) => (
           <div
             key={item}
-            className="border rounded-lg p-3 shadow hover:shadow-lg cursor-pointer text-center"
+            className="border border-pink-500 rounded-lg p-3 shadow hover:shadow-lg cursor-pointer text-center"
             onClick={() =>
               navigate({
                 to: `/brands/$brandId`,
@@ -74,7 +67,7 @@ function RouteComponent() {
       />
 
       <p className="mx-auto text-gray-500 text-center">
-        total brands: {brands.length}
+        total brands: {data?.length}
       </p>
     </div>
   );

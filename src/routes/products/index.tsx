@@ -37,7 +37,6 @@ function Products() {
   const { data, isLoading, error } = useQuery<{ products: Product[] }>({
     queryKey: ["products"],
     queryFn: fetchProducts,
-    staleTime: 1000 * 60 * 5,
   });
 
   const totalPages = Math.ceil((data?.products?.length || 0) / perPage);

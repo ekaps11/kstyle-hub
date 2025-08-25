@@ -12,7 +12,7 @@ export function ProductCard({
   return (
     <div
       key={id}
-      className="border rounded-lg p-3 shadow hover:shadow-lg cursor-pointer"
+      className="border border-pink-500 rounded-lg p-3 shadow hover:shadow-lg cursor-pointer"
       onClick={() =>
         navigate({
           to: `/products/$productId`,

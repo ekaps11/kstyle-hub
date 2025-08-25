@@ -23,7 +23,7 @@ function RouteComponent() {
   if (!data) {
     return (
       <div className="flex justify-center items-center h-[50vh]">
-        <span className="text-red-500">Produk tidak ditemukan</span>
+        <span className="text-red-500">Product not found</span>
       </div>
     );
   }
@@ -47,7 +47,7 @@ function RouteComponent() {
             src={thumbnail}
             alt={title}
             loading="lazy"
-            className="mx-auto object-cover rounded-lg border border-gray-300 shadow-sm"
+            className="mx-auto object-cover rounded-lg border border-pink-500 shadow-sm"
           />
         </div>
 

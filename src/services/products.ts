@@ -14,11 +14,11 @@ export const PRODUCT_CATEGORIES = [
 ];
 
 export async function fetchProducts(): Promise<{ products: Product[] }> {
-  const responses = await Promise.all(
+  const res = await Promise.all(
     PRODUCT_CATEGORIES.map((cat) =>
       fetcher<{ products: Product[] }>(`/products/category/${cat}`)
     )
   );
 
-  return { products: responses.flatMap((item) => item.products) };
+  return { products: res.flatMap((item) => item.products) };
 }

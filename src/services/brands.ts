@@ -1,16 +1,27 @@
 import type { Product } from "@/routes/products";
+import fetcher from "@/lib/fetcher";
 import { PRODUCT_CATEGORIES } from "./products";
 
-export async function fetchBrands(brand: string) {
-  const res = await fetch("https://dummyjson.com/products?limit=194");
-  const data = await res.json();
+export async function fetchBrands() {
+  const res = await fetcher<{ products: Product[] }>(`/products?limit=194`);
 
-  return brand
-    ? data.products.filter((item: Product) =>
-        PRODUCT_CATEGORIES.includes(item.category)
-      )
-    : (data.products.filter(
-        ({ brand }: { brand: string }) =>
-          brand.toLowerCase() === brand.toLowerCase()
-      ) as Product[]);
+  return [
+    ...new Set(
+      res.products
+        ?.map((item: Product) =>
+          PRODUCT_CATEGORIES.includes(item.category) ? item.brand : null
+        )
+        .filter(Boolean)
+    ),
+  ] as string[];
+}
+
+export async function fetchBrandProducts(brandId: string) {
+  const res = await fetcher<{ products: Product[] }>(
+    `/products?brand=${brandId}&limit=194`
+  );
+
+  return (
+    res.products.filter((item) => item.brand?.toLowerCase() === brandId) || []
+  );
 }
