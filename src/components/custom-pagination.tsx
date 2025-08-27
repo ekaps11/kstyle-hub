@@ -22,33 +22,41 @@ export function CustomPagination({
   if (totalPages <= 1) return null;
 
   const pages: (number | "...")[] = [];
-
   pages.push(1);
 
   const start = Math.max(2, page - 1);
   const end = Math.min(totalPages - 1, page + 1);
 
-  if (start > 2) {
-    pages.push("...");
-  }
-
+  if (start > 2) pages.push("...");
   for (let i = start; i <= end; i++) {
     if (!pages.includes(i)) pages.push(i);
   }
+  if (end < totalPages - 1) pages.push("...");
+  if (!pages.includes(totalPages)) pages.push(totalPages);
 
-  if (end < totalPages - 1) {
-    pages.push("...");
-  }
-
-  if (totalPages > 1) pages.push(totalPages);
+  const hrefFor = (p: number) => `/products/?page=${p}`;
 
   return (
     <Pagination className="pt-5">
-      <PaginationContent>
+      <PaginationContent className="text-primary">
         <PaginationItem>
-          <PaginationPrevious
-            onClick={() => page > 1 && onPageChange(page - 1)}
-          />
+          {page > 1 ? (
+            <PaginationPrevious
+              href={hrefFor(page - 1)}
+              aria-label="Previous page"
+              onClick={(e) => {
+                e.preventDefault();
+                onPageChange(page - 1);
+              }}
+            />
+          ) : (
+            <PaginationPrevious
+              href={hrefFor(page)}
+              aria-disabled
+              aria-label="Previous page"
+              onClick={(e) => e.preventDefault()}
+            />
+          )}
         </PaginationItem>
 
         {pages.map((p, idx) =>
@@ -59,9 +67,13 @@ export function CustomPagination({
           ) : (
             <PaginationItem key={p}>
               <PaginationLink
-                className="text-pink-500"
+                href={hrefFor(p)}
                 isActive={page === p}
-                onClick={() => onPageChange(p)}
+                aria-current={page === p ? "page" : undefined}
+                onClick={(e) => {
+                  e.preventDefault();
+                  onPageChange(p);
+                }}
               >
                 {p}
               </PaginationLink>
@@ -70,9 +82,23 @@ export function CustomPagination({
         )}
 
         <PaginationItem>
-          <PaginationNext
-            onClick={() => page < totalPages && onPageChange(page + 1)}
-          />
+          {page < totalPages ? (
+            <PaginationNext
+              href={hrefFor(page + 1)}
+              aria-label="Next page"
+              onClick={(e) => {
+                e.preventDefault();
+                onPageChange(page + 1);
+              }}
+            />
+          ) : (
+            <PaginationNext
+              href={hrefFor(page)}
+              aria-disabled
+              aria-label="Next page"
+              onClick={(e) => e.preventDefault()}
+            />
+          )}
         </PaginationItem>
       </PaginationContent>
     </Pagination>

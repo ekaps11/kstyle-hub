@@ -2,8 +2,10 @@ import { createFileRoute, useParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import fetcher from "@/lib/fetcher";
 import type { Product } from "@/routes/products";
-import { formatPrice } from "@/lib/helper";
+import { formatPrice } from "@/lib/utils";
 import { Stars } from "@/components/stars";
+import { Button } from "@/components/ui/button";
+import { Seo } from "@/components/seo";
 
 export const Route = createFileRoute("/products/$productId")({
   component: RouteComponent,
@@ -41,22 +43,24 @@ function RouteComponent() {
 
   return (
     <div className="p-5 md:p-10 max-w-6xl mx-auto">
+      <Seo title={title} description={description} />
+
       <div className="flex flex-col md:flex-row gap-8">
         <div className="flex-shrink-0 md:w-1/3">
           <img
             src={thumbnail}
             alt={title}
             loading="lazy"
-            className="mx-auto object-cover rounded-lg border border-pink-500 shadow-sm"
+            className="mx-auto object-cover rounded-lg border border-primary shadow-sm"
           />
         </div>
 
         <div className="flex-1 flex flex-col gap-4">
-          <h1 className="text-2xl md:text-3xl font-bold text-pink-500">
+          <h1 className="text-2xl md:text-3xl font-bold text-primary">
             {title}
           </h1>
           <p className="text-gray-500 font-medium">{brand}</p>
-          <p className="text-gray-400 uppercase tracking-wide text-sm">
+          <p className="text-gray-500 uppercase tracking-wide text-sm">
             {category}
           </p>
 
@@ -64,13 +68,13 @@ function RouteComponent() {
             <Stars rating={rating} />
           </div>
 
-          <p className="text-lg font-semibold text-pink-500">
+          <p className="text-lg font-semibold text-primary">
             {formatPrice(price)}
           </p>
 
           {stock !== undefined && (
             <p
-              className={`font-medium ${stock > 0 ? "text-green-600" : "text-red-600"}`}
+              className={`font-medium ${stock > 0 ? "text-green-800" : "text-red-800"}`}
             >
               {stock > 0 ? `${stock} available` : "Out of stock"}
             </p>
@@ -79,12 +83,8 @@ function RouteComponent() {
           <p className="text-gray-700 mt-2">{description}</p>
 
           <div className="mt-4 flex flex-wrap gap-3">
-            <button className="bg-pink-500 text-white font-semibold py-2 px-4 rounded hover:bg-pink-600 transition">
-              Add to Cart
-            </button>
-            <button className="border border-pink-500 text-pink-500 font-semibold py-2 px-4 rounded hover:bg-pink-50 transition">
-              Buy Now
-            </button>
+            <Button>Add to Cart</Button>
+            <Button variant="outline">Buy Now</Button>
           </div>
         </div>
       </div>

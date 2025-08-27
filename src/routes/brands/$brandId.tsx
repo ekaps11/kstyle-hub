@@ -1,8 +1,11 @@
+import { createFileRoute, useParams } from "@tanstack/react-router";
 import { ProductList } from "@/components/products/product-list";
-import { Capitalize } from "@/lib/helper";
+import { capitalize } from "@/lib/utils";
 import { fetchBrandProducts } from "@/services/brands";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, useParams } from "@tanstack/react-router";
+import type { Product } from "../products";
+import { Seo } from "@/components/seo";
+import { Layout } from "@/components/layout";
 
 export const Route = createFileRoute("/brands/$brandId")({
   component: RouteComponent,
@@ -16,15 +19,21 @@ function RouteComponent() {
     queryFn: () => fetchBrandProducts(brandId),
   });
 
+  const header = `${capitalize(brandId)} Product${(data?.length as number) > 1 ? "s" : ""}`;
+
   if (isLoading) return <p className="text-gray-500">Loading...</p>;
   if (error) return <p className="text-red-500">Error: {error.message}</p>;
 
   return (
     <div className="p-5">
-      <h1 className="font-bold mb-3">{Capitalize(brandId)} Products</h1>
+      <Seo
+        title={header}
+        description={`Explore ${capitalize(brandId)} products at K-Style Hub`}
+      />
 
-      {/* products list */}
-      <ProductList products={data} />
+      <Layout header={header} total={data as Product[]}>
+        <ProductList products={data as Product[]} />
+      </Layout>
     </div>
   );
 }

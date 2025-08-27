@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@theme {
+  --color-primary: #831843;
+  --color-primary-foreground: #ffffff;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

@@ -7,6 +7,9 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "@/services/products";
 import { ProductList } from "@/components/products/product-list";
 import { CustomPagination } from "@/components/custom-pagination";
+import { Layout } from "@/components/layout";
+import { getPaginatedProducts } from "@/lib/utils";
+import { Seo } from "@/components/seo";
 
 export type Product = {
   id: number;
@@ -39,32 +42,32 @@ function Products() {
     queryFn: fetchProducts,
   });
 
-  const totalPages = Math.ceil((data?.products?.length || 0) / perPage);
-
-  const paginatedProducts =
-    data?.products?.slice((page - 1) * perPage, page * perPage) ?? [];
+  const { totalPages, paginatedProducts } = getPaginatedProducts(
+    data?.products,
+    data?.products?.length || 0,
+    page,
+    perPage
+  );
 
   if (isLoading) return <p className="text-gray-500">Loading...</p>;
   if (error) return <p className="text-red-500">Error: {error.message}</p>;
-  if (!paginatedProducts) return;
 
   return (
     <div className="p-5">
-      <h1 className="font-bold mb-3">
-        Shop by <span className="text-pink-500 underline">Products</span>
-      </h1>
-
-      <ProductList products={paginatedProducts} />
-
-      <CustomPagination
-        page={page}
-        totalPages={totalPages}
-        onPageChange={(p: number) => navigate({ search: { page: p } })}
+      <Seo
+        title="K-Style - Products"
+        description="Explore a wide range of beauty products at K-Style Hub"
       />
 
-      <p className="mx-auto text-gray-500 text-center">
-        total products: {data?.products?.length}
-      </p>
+      <Layout header="Products" total={data?.products || []}>
+        <ProductList products={paginatedProducts} />
+
+        <CustomPagination
+          page={page}
+          totalPages={totalPages}
+          onPageChange={(p: number) => navigate({ search: { page: p } })}
+        />
+      </Layout>
     </div>
   );
 }
